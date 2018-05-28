@@ -8,6 +8,6 @@ PKGCONFIG += jack
 
 DEFINES += QT_DEPRECATED_WARNINGS QT_NO_CAST_FROM_ASCII
 
-HEADERS += src/JackClient.h
-SOURCES += src/JackClient.cpp src/main.cpp
+HEADERS += src/JackClient.h src/ReloaderQmlApplicationEngine.h
+SOURCES += src/JackClient.cpp src/ReloaderQmlApplicationEngine.cpp src/main.cpp
 RESOURCES += resources.qrc
