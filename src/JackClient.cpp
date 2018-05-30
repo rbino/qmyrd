@@ -15,7 +15,6 @@ JackClient::JackClient(QObject *parent)
     , m_acc(0)
     , m_accSamples(0)
 {
-    initJack();
 }
 
 JackClient::~JackClient()
@@ -25,14 +24,14 @@ JackClient::~JackClient()
     }
 }
 
-void JackClient::initJack()
+void JackClient::initJack(const QString &name)
 {
-    const char *clientName = "qmyrd";
+    QByteArray clientName = QStringLiteral("%1_qmyrd").arg(name).toLatin1();
     const char *serverName = NULL;
     jack_options_t options = JackNullOption;
     jack_status_t status;
 
-    m_client = jack_client_open(clientName, options, &status, serverName);
+    m_client = jack_client_open(clientName.constData(), options, &status, serverName);
     if (!m_client) {
         qWarning() << "jack_client_open() failed, status" << status;
         return;
@@ -64,9 +63,31 @@ void JackClient::initJack()
     }
 }
 
+QString JackClient::name() const
+{
+    return m_name;
+}
+
 float JackClient::volume() const
 {
     return m_volume;
+}
+
+void JackClient::setName(const QString &name)
+{
+    if (m_client) {
+        qWarning() << "Client already initialized, not changing name";
+        return;
+    }
+
+    if (name.isEmpty()) {
+        qWarning() << "Can't set empty name";
+        return;
+    }
+
+    m_name = name;
+    emit nameChanged();
+    initJack(m_name);
 }
 
 int JackClient::process(jack_nframes_t nFrames)
