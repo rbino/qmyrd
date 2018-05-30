@@ -6,6 +6,18 @@ Window {
 
     visible: true;
 
+    property int t: 0;
+
+    Timer {
+        interval: 16;
+        running: true;
+        repeat: true;
+
+        onTriggered: {
+            t += 16;
+        }
+    }
+
     Loader {
         id: loader;
 
