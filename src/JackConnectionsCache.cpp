@@ -18,3 +18,18 @@ JackConnectionsCache *JackConnectionsCache::instance()
     }
     return s_instance;
 }
+
+void JackConnectionsCache::addConnection(const QString &clientName, const QByteArray &connection)
+{
+    m_clientToPorts.insert(clientName, connection);
+}
+
+void JackConnectionsCache::removeConnection(const QString &clientName, const QByteArray &connection)
+{
+    m_clientToPorts.remove(clientName, connection);
+}
+
+QList<QByteArray> JackConnectionsCache::connections(const QString &clientName)
+{
+    return m_clientToPorts.values(clientName);
+}
