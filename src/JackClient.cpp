@@ -1,5 +1,7 @@
 #include "JackClient.h"
 
+#include "JackConnectionsCache.h"
+
 #include <jack/jack.h>
 
 #include <QDebug>
@@ -19,9 +21,11 @@ JackClient::JackClient(QObject *parent)
 
 JackClient::~JackClient()
 {
-    if (m_client) {
-        jack_client_close(m_client);
+    if (!m_client) {
+        return;
     }
+
+    jack_client_close(m_client);
 }
 
 void JackClient::initJack(const QString &name)
@@ -47,6 +51,7 @@ void JackClient::initJack(const QString &name)
     }
 
     jack_set_process_callback(m_client, JackClient::staticProcess, (void*)this);
+    jack_set_port_connect_callback(m_client, JackClient::staticPortConnect, reinterpret_cast<void *>(this));
 
     m_inputPort = jack_port_register (m_client, "input",
                                       JACK_DEFAULT_AUDIO_TYPE,
@@ -60,6 +65,14 @@ void JackClient::initJack(const QString &name)
     if (jack_activate(m_client)) {
         qWarning() << "Can't activate client";
         return;
+    }
+
+    QList<QByteArray> cachedConnections = JackConnectionsCache::instance()->connections(m_name);
+    for (const QByteArray &connection : cachedConnections) {
+        int ret = jack_connect(m_client, connection.constData(), jack_port_name(m_inputPort));
+        if (ret && ret != EEXIST) {
+            qWarning() << "Couldn't connect to port " << connection << ": error " << ret;
+        }
     }
 }
 
@@ -109,8 +122,35 @@ int JackClient::process(jack_nframes_t nFrames)
     return 0;
 }
 
+void JackClient::portConnect(jack_port_id_t a, jack_port_id_t b, bool connected)
+{
+    jack_port_t *aPort = jack_port_by_id(m_client, a);
+    jack_port_t *bPort = jack_port_by_id(m_client, b);
+
+    QByteArray connection;
+    if (jack_port_is_mine(m_client, aPort)) {
+        connection = jack_port_name(bPort);
+    } else if (jack_port_is_mine(m_client, bPort)) {
+        connection = jack_port_name(aPort);
+    } else {
+        return;
+    }
+
+    if (connected) {
+        JackConnectionsCache::instance()->addConnection(m_name, connection);
+    } else {
+        JackConnectionsCache::instance()->removeConnection(m_name, connection);
+    }
+}
+
 int JackClient::staticProcess(jack_nframes_t nFrames, void *arg)
 {
     JackClient *client = reinterpret_cast<JackClient*>(arg);
     return client->process(nFrames);
+}
+
+void JackClient::staticPortConnect(jack_port_id_t a, jack_port_id_t b, int connected, void *arg)
+{
+    JackClient *client = reinterpret_cast<JackClient *>(arg);
+    client->portConnect(a, b, connected);
 }

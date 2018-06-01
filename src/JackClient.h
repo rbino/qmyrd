@@ -21,6 +21,7 @@ public:
     void setName(const QString &name);
 
     int static staticProcess(jack_nframes_t nFrames, void *arg);
+    void static staticPortConnect(jack_port_id_t a, jack_port_id_t b, int connected, void *arg);
 
 signals:
     void nameChanged();
@@ -29,6 +30,7 @@ signals:
 private slots:
     void initJack(const QString &name);
     int process(jack_nframes_t nFrames);
+    void portConnect(jack_port_id_t a, jack_port_id_t b, bool connected);
 
 private:
     jack_client_t *m_client;
