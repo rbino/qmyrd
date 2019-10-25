@@ -5,20 +5,9 @@ import com.rbino.qmyrd 1.0;
 Item {
     id: root;
 
-    property int t: 0;
-
-    Timer {
-        interval: 16;
-        running: true;
-        repeat: true;
-
-        onTriggered: {
-            t += 16;
-        }
-    }
-
     JackClient {
         id: cl;
+        name: "test";
     }
 
     Grid {
