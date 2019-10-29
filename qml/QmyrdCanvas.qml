@@ -7,6 +7,7 @@ Window {
     visible: true;
 
     property int t: 0;
+    property var hiddenLoader: loaderA.visible ? loaderB : loaderA;
 
     Timer {
         interval: 16;
@@ -19,13 +20,43 @@ Window {
     }
 
     Loader {
-        id: loader;
+        id: loaderA;
 
         source: $ComponentUrl;
+        asynchronous: true;
+        visible: true;
 
-        function reload() {
+        function reload(componentUrl) {
             source = "";
-            source = $ComponentUrl;
+            source = componentUrl;
+        }
+
+        onLoaded: {
+            loaderA.visible = true;
+            loaderB.visible = false;
+        }
+
+        anchors {
+            fill: parent;
+        }
+    }
+
+    Loader {
+        id: loaderB;
+
+        source: "";
+        asynchronous: true;
+        visible: false;
+
+
+        function reload(componentUrl) {
+            source = "";
+            source = componentUrl;
+        }
+
+        onLoaded: {
+            loaderB.visible = true;
+            loaderA.visible = false;
         }
 
         anchors {
@@ -37,7 +68,7 @@ Window {
         target: $Engine;
         onComponentChanged: {
             console.log("Source changed, reloading");
-            loader.reload();
+            hiddenLoader.reload($ComponentUrl);
         }
     }
 }
