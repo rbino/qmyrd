@@ -7,10 +7,12 @@
 
 #include "ReloaderQmlApplicationEngine.h"
 
+#include "EnvelopeGenerator.h"
 #include "JackClient.h"
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<EnvelopeGenerator>("com.rbino.qmyrd", 1, 0, "EnvelopeGenerator");
     qmlRegisterType<JackClient>("com.rbino.qmyrd", 1, 0, "JackClient");
 
     QGuiApplication app(argc, argv);
