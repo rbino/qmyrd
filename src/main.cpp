@@ -9,6 +9,7 @@
 
 #include "EnvelopeGenerator.h"
 #include "JackClient.h"
+#include "OscSocket.h"
 
 int main(int argc, char *argv[])
 {
@@ -39,6 +40,8 @@ int main(int argc, char *argv[])
     if (!engine.setPath(qmlPath)) {
         return 1;
     }
+
+    OscSocket::init(7771, &engine);
 
     QUrl qmlUrl = QUrl::fromLocalFile(qmlPath);
     engine.rootContext()->setContextProperty(QStringLiteral("$ComponentUrl"), qmlUrl);
