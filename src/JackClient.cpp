@@ -16,7 +16,9 @@ JackClient::JackClient(QObject *parent)
     , m_volume(0)
     , m_acc(0)
     , m_accSamples(0)
+    , m_name(QStringLiteral("default"))
 {
+    initJack(m_name);
 }
 
 JackClient::~JackClient()
@@ -88,14 +90,13 @@ float JackClient::volume() const
 
 void JackClient::setName(const QString &name)
 {
-    if (m_client) {
-        qWarning() << "Client already initialized, not changing name";
-        return;
-    }
-
     if (name.isEmpty()) {
         qWarning() << "Can't set empty name";
         return;
+    }
+
+    if (m_client) {
+        jack_client_close(m_client);
     }
 
     m_name = name;
