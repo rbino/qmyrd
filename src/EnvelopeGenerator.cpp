@@ -5,13 +5,15 @@
 #define TICK_MS 33 // ~30 fps, +/- ~2 ms since it's a CoarseTimer
 #define TICK_S ((double) TICK_MS / 1000.0)
 #define PEAK_VALUE 1.0
+#define DEFAULT_ATTACK 0.0
+#define DEFAULT_RELASE 0.2
 
 EnvelopeGenerator::EnvelopeGenerator(QObject *parent)
     : QObject(parent)
     , m_timer(new QTimer(this))
     , m_currentPhase(OffPhase)
-    , m_attack(0)
-    , m_release(0)
+    , m_attack(DEFAULT_ATTACK)
+    , m_release(DEFAULT_RELASE)
     , m_value(0)
 {
     m_timer->setInterval(33);
