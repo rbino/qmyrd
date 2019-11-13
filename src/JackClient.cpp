@@ -13,10 +13,10 @@
 JackClient::JackClient(QObject *parent)
     : QObject(parent)
     , m_client(nullptr)
+    , m_name(QStringLiteral("default"))
     , m_volume(0)
     , m_acc(0)
     , m_accSamples(0)
-    , m_name(QStringLiteral("default"))
 {
     initJack(m_name);
 }

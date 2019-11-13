@@ -13,11 +13,13 @@ HEADERS += src/JackClient.h \
            src/JackConnectionsCache.h \
            src/EnvelopeGenerator.h \
            src/OscSocket.h \
+           src/TidalEnvGen.h \
            src/ReloaderQmlApplicationEngine.h
 SOURCES += src/main.cpp \
            src/JackClient.cpp \
            src/JackConnectionsCache.cpp \
            src/EnvelopeGenerator.cpp \
            src/OscSocket.cpp \
+           src/TidalEnvGen.cpp \
            src/ReloaderQmlApplicationEngine.cpp
 RESOURCES += resources.qrc

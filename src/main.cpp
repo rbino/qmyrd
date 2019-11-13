@@ -10,11 +10,13 @@
 #include "EnvelopeGenerator.h"
 #include "JackClient.h"
 #include "OscSocket.h"
+#include "TidalEnvGen.h"
 
 int main(int argc, char *argv[])
 {
     qmlRegisterType<EnvelopeGenerator>("com.rbino.qmyrd", 1, 0, "EnvelopeGenerator");
     qmlRegisterType<JackClient>("com.rbino.qmyrd", 1, 0, "JackClient");
+    qmlRegisterType<TidalEnvGen>("com.rbino.qmyrd", 1, 0, "TidalEnvGen");
 
     QGuiApplication app(argc, argv);
 
